@@ -33,11 +33,13 @@
 
 .left h1 {
   font-family: "Inter", sans-serif;
+  width: 100%;
+  max-width: 330px;
   font-size: 50px;
   font-weight: 700;
   line-height: 1;
   color: #000;
-  margin-bottom: 42px;
+  margin: 0 0 42px;
 }
 
 .form {
@@ -76,25 +78,19 @@
 }
 
 .error {
-  position: absolute;
-  top: 200px;
-  left: 0;
-  width: 330px;
   text-align: center;
   font-size: 15px;
-  color: #000;
+  color: #d92d20;
   font-weight: 500;
-  margin: 0;
-  z-index: 2;
+  margin: 4px 0 0;
 }
 
-.form button {
+.form > button {
   width: 180px;
   height: 48px;
   border-radius: 14px;
   margin: 20px auto;
   display: block;
-  transform: translateX(10px);
 }
 
 .forgot {
@@ -103,7 +99,7 @@
   font-weight: 700;
   color: #6E7791;
   cursor: pointer;
-  margin: 15 px auto 15 px auto;
+  margin: 15px auto 0;
 }
 
 .right {

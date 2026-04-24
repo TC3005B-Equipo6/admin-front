@@ -7,12 +7,15 @@ const meta = {
   decorators: [
     (Story) => (
       <div
-      style={{
-        minHeight: "100vh", 
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 10}}>
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 320,
+          padding: 10,
+        }}
+      >
         <Story />
       </div>
     ),
@@ -32,10 +35,19 @@ export const Usuario: Story = {
   },
 };
 
-export const Contraseña: Story = {
+export const Contrasena: Story = {
   args: {
     label: "Contraseña",
     placeholder: "Introduce tu contraseña",
     type: "password",
+  },
+};
+
+export const PasswordWithToggle: Story = {
+  args: {
+    label: "Contraseña",
+    placeholder: "Introduce tu contraseña",
+    type: "password",
+    showPasswordToggle: true,
   },
 };
