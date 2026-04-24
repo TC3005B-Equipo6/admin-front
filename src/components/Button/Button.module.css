@@ -1,0 +1,47 @@
+.button {
+  border: none;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.blue{
+  background-color: #6E7791;
+  color: white;
+  font-weight: 500;
+}
+
+.red {
+  background-color: #ef2b2d;
+  color: white;
+  font-weight: 500;
+}
+
+.white {
+  background-color: white;
+  color: #5b6575;
+  border: 1px solid #E5E7EB;
+  font-weight: 500;
+}
+
+.medium {
+  padding: 11px 20px;
+  font-size: 14px;
+  width: 100px;
+  height: 40px;
+}
+
+.large {
+  padding: 12px 24px;
+  font-size: 16px;
+  width: 200px;
+  height: 60px;
+}
