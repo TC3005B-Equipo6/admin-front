@@ -1,0 +1,34 @@
+.wrapper {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f1f1f;
+  font-family: "Inter", sans-serif;
+}
+
+.input {
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: "Inter", sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.input:focus {
+  border-color: #6E7791;
+}
+
+.input::placeholder {
+  color: #888888;
+}
