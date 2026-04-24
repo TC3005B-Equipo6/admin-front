@@ -61,7 +61,7 @@ export default function LoginScreen() {
 
             <Button type="submit" label="INICIAR SESIÓN" />
 
-            <p>¿Olvidaste tu contraseña?</p>
+            <p className={styles.forgot}>¿Olvidaste tu contraseña?</p>
           </form>
         </div>
 

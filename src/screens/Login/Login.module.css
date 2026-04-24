@@ -33,11 +33,13 @@
 
 .left h1 {
   font-family: "Inter", sans-serif;
+  width: 100%;
+  max-width: 330px;
   font-size: 50px;
   font-weight: 700;
   line-height: 1;
   color: #000;
-  margin-bottom: 42px;
+  margin: 0 0 42px;
 }
 
 .form {
@@ -89,7 +91,6 @@
   border-radius: 14px;
   margin: 20px auto;
   display: block;
-  transform: translateX(10px);
 }
 
 .forgot {
@@ -98,7 +99,7 @@
   font-weight: 700;
   color: #6E7791;
   cursor: pointer;
-  margin: 15 px auto 15 px auto;
+  margin: 15px auto 0;
 }
 
 .right {
