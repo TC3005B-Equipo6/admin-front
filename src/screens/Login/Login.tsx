@@ -8,10 +8,6 @@ import { AppConfigError } from "../../errors/AppConfigError";
 import { login, validateToken } from "../../services/authService";
 import styles from "./Login.module.css";
 
-const isValidEmail = (value: string) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
-
 export default function LoginScreen() {
   const navigate = useNavigate();
 
@@ -26,11 +22,6 @@ export default function LoginScreen() {
 
     if (!email || !password) {
       setError("Completa todos los campos");
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      setError("Ingresa un correo válido");
       return;
     }
 
