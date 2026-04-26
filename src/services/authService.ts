@@ -1,17 +1,20 @@
-export const login = async (
-  email: string,
-  password: string
-): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (
-        email === "user@move360.com" &&
-        password === "123456"
-      ) {
-        resolve("fake-token-123456");
-      } else {
-        reject(new Error("Credenciales inválidas"));
-      }
-    }, 1000);
-  });
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import api from "./api";
+
+export const login = async (email: string, password: string) => {
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  const user = userCredential.user;
+  const token = await user.getIdToken();
+
+  return token;
+};
+
+export const validateToken = async () => {
+  const response = await api.get("/auth/validate");
+  return response.data;
 };
