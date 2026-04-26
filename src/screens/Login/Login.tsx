@@ -1,8 +1,11 @@
+import { isAxiosError } from "axios";
+import { FirebaseError } from "firebase/app";
 import { useState, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { Input } from "../../components/Input/Input";
-import { login } from "../../services/authService";
+import { AppConfigError } from "../../errors/AppConfigError";
+import { login, validateToken } from "../../services/authService";
 import styles from "./Login.module.css";
 
 export default function LoginScreen() {
@@ -15,7 +18,9 @@ export default function LoginScreen() {
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!user || !password) {
+    const email = user.trim();
+
+    if (!email || !password) {
       setError("Completa todos los campos");
       return;
     }
@@ -23,12 +28,43 @@ export default function LoginScreen() {
     try {
       setError("");
 
-      const token = await login(user, password);
+      const token = await login(email, password);
 
       localStorage.setItem("token", token);
+      await validateToken();
+
       navigate("/home");
-    } catch {
-      setError("Usuario o contraseña incorrectos");
+    } catch (error: unknown) {
+      if (error instanceof AppConfigError) {
+        if (import.meta.env.DEV) {
+          console.error(error);
+        }
+
+        setError("No fue posible iniciar sesión en este momento");
+        return;
+      }
+
+      if (error instanceof FirebaseError) {
+        if (
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/wrong-password" ||
+          error.code === "auth/user-not-found"
+        ) {
+          setError("Correo o contraseña incorrectos");
+          return;
+        }
+
+        if (error.code === "auth/invalid-email") {
+          setError("Ingresa un correo válido");
+          return;
+        }
+      }
+
+      if (isAxiosError(error) && error.response?.status === 401) {
+        setError("Token inválido");
+      } else {
+        setError("Ocurrió un error");
+      }
     }
   };
 
@@ -42,7 +78,9 @@ export default function LoginScreen() {
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <Input
-              label="Usuario"
+              label="Correo"
+              type="email"
+              autoComplete="username"
               placeholder="ejemplo@move360.com"
               value={user}
               onChange={(e) => setUser(e.currentTarget.value)}
