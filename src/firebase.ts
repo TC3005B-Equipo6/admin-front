@@ -1,46 +1,36 @@
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { AppConfigError } from "./errors/AppConfigError";
 
 const requiredEnv = (
-  value: string | undefined,
-  variableName: string
+  value: string | undefined
 ) => {
   if (!value) {
-    throw new Error(`Missing environment variable: ${variableName}`);
+    throw new AppConfigError();
   }
 
   return value;
 };
 
-const firebaseConfig = {
-  apiKey: requiredEnv(
-    import.meta.env.VITE_FIREBASE_API_KEY,
-    "VITE_FIREBASE_API_KEY"
-  ),
-  authDomain: requiredEnv(
-    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    "VITE_FIREBASE_AUTH_DOMAIN"
-  ),
-  projectId: requiredEnv(
-    import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    "VITE_FIREBASE_PROJECT_ID"
-  ),
-  storageBucket: requiredEnv(
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    "VITE_FIREBASE_STORAGE_BUCKET"
-  ),
+const getFirebaseConfig = () => ({
+  apiKey: requiredEnv(import.meta.env.VITE_FIREBASE_API_KEY),
+  authDomain: requiredEnv(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
+  projectId: requiredEnv(import.meta.env.VITE_FIREBASE_PROJECT_ID),
+  storageBucket: requiredEnv(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET),
   messagingSenderId: requiredEnv(
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    "VITE_FIREBASE_MESSAGING_SENDER_ID"
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID
   ),
-  appId: requiredEnv(
-    import.meta.env.VITE_FIREBASE_APP_ID,
-    "VITE_FIREBASE_APP_ID"
-  ),
+  appId: requiredEnv(import.meta.env.VITE_FIREBASE_APP_ID),
+});
+
+export const getFirebaseApp = () => {
+  if (getApps().length > 0) {
+    return getApp();
+  }
+
+  return initializeApp(getFirebaseConfig());
 };
 
-const app = initializeApp(firebaseConfig);
-
-export const auth = getAuth(app);
-
-export default app;
+export const getAuthInstance = () => {
+  return getAuth(getFirebaseApp());
+};

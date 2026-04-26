@@ -1,8 +1,10 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import api from "./api";
+import { getAuthInstance } from "../firebase";
+import { getApiClient } from "./api";
 
 export const login = async (email: string, password: string) => {
+  const auth = getAuthInstance();
+
   const userCredential = await signInWithEmailAndPassword(
     auth,
     email,
@@ -15,6 +17,6 @@ export const login = async (email: string, password: string) => {
 };
 
 export const validateToken = async () => {
-  const response = await api.get("/auth/validate");
+  const response = await getApiClient().get("/auth/validate");
   return response.data;
 };

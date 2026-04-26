@@ -4,8 +4,13 @@ import { useState, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { Input } from "../../components/Input/Input";
+import { AppConfigError } from "../../errors/AppConfigError";
 import { login, validateToken } from "../../services/authService";
 import styles from "./Login.module.css";
+
+const isValidEmail = (value: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
 
 export default function LoginScreen() {
   const navigate = useNavigate();
@@ -17,21 +22,37 @@ export default function LoginScreen() {
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!user || !password) {
+    const email = user.trim();
+
+    if (!email || !password) {
       setError("Completa todos los campos");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError("Ingresa un correo válido");
       return;
     }
 
     try {
       setError("");
 
-      const token = await login(user, password);
+      const token = await login(email, password);
 
       localStorage.setItem("token", token);
       await validateToken();
 
       navigate("/home");
     } catch (error: unknown) {
+      if (error instanceof AppConfigError) {
+        if (import.meta.env.DEV) {
+          console.error(error);
+        }
+
+        setError("No fue posible iniciar sesión en este momento");
+        return;
+      }
+
       if (error instanceof FirebaseError) {
         if (
           error.code === "auth/invalid-credential" ||
