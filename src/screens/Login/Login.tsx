@@ -53,11 +53,6 @@ export default function LoginScreen() {
           setError("Upsi! Correo o contraseña incorrectos");
           return;
         }
-
-        if (error.code === "auth/invalid-email") {
-          setError("Upsi! Ingresa un correo válido");
-          return;
-        }
       }
 
       if (isAxiosError(error) && error.response?.status === 401) {
