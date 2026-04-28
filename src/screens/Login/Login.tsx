@@ -21,7 +21,7 @@ export default function LoginScreen() {
     const email = user.trim();
 
     if (!email || !password) {
-      setError("Completa todos los campos");
+      setError("Upsi! Completa todos los campos");
       return;
     }
 
@@ -40,7 +40,7 @@ export default function LoginScreen() {
           console.error(error);
         }
 
-        setError("No fue posible iniciar sesión en este momento");
+        setError("Upsi! No fue posible iniciar sesión en este momento");
         return;
       }
 
@@ -50,20 +50,20 @@ export default function LoginScreen() {
           error.code === "auth/wrong-password" ||
           error.code === "auth/user-not-found"
         ) {
-          setError("Correo o contraseña incorrectos");
+          setError("Upsi! Correo o contraseña incorrectos");
           return;
         }
 
         if (error.code === "auth/invalid-email") {
-          setError("Ingresa un correo válido");
+          setError("Upsi! Ingresa un correo válido");
           return;
         }
       }
 
       if (isAxiosError(error) && error.response?.status === 401) {
-        setError("Token inválido");
+        setError("Upsi! Token inválido");
       } else {
-        setError("Ocurrió un error");
+        setError("Upsi! Ocurrió un error");
       }
     }
   };
