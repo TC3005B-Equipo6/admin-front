@@ -21,14 +21,15 @@ export default function HomeScreen() {
       {showModal && (
         <Modal
           title="Cerrar sesión"
-          message="¿Estás seguro de que deseas cerrar sesión?"
-          confirmText="Cerrar sesión"
-          cancelText="Cancelar"
-          confirmVariant="red"
-          iconName="logout"
-          onConfirm={handleConfirmLogout}
-          onCancel={() => setShowModal(false)}
+          message="¿Estás seguro de que deseas"
+          secondaryMessage="cerrar sesión?"
           onClose={() => setShowModal(false)}
+          footer={
+            <>
+              <Button variant="white" size="large" label="Cancelar" onPress={() => setShowModal(false)} />
+              <Button variant="red" size="large" label="Cerrar sesión" onPress={handleConfirmLogout} />
+            </>
+          }
         />
       )}
     </div>
