@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import styles from "./Modal.module.css";
 import { Button } from "../Button/Button";
 import { icons, type IconName } from "../../icons";
 
@@ -36,7 +35,13 @@ export const Modal = ({
   footer,
   className = "",
 }: ModalProps) => {
-  const modalClasses = [styles.modal, className].filter(Boolean).join(" ");
+  const modalClasses = [
+    "w-[440px] bg-white rounded-[15px] p-[30px] flex flex-col font-[Inter,sans-serif]",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const CloseIcon = icons.close;
   const Icon = iconName ? icons[iconName] : null;
 
@@ -44,16 +49,22 @@ export const Modal = ({
   const hasDefaultFooter = Boolean(onConfirm || onCancel);
 
   return (
-    <div className={styles.overlay}>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6">
       <div className={modalClasses}>
-        <div className={styles.header}>
-          {title ? <h3 className={styles.title}>{title}</h3> : <div />}
+        <div className="flex justify-between items-center">
+          {title ? (
+            <h3 className="text-[#1f4e79] text-lg font-semibold m-0">
+              {title}
+            </h3>
+          ) : (
+            <div />
+          )}
 
           {showCloseIcon && (
             <button
               type="button"
               aria-label="Cerrar"
-              className={styles.close}
+              className="bg-transparent border-0 cursor-pointer text-[#1f4e79] inline-flex items-center justify-center p-1"
               onClick={onClose}
             >
               <CloseIcon size={24} />
@@ -63,7 +74,9 @@ export const Modal = ({
 
         <div
           className={
-            hasCustomContent ? styles.contentCustom : styles.contentCentered
+            hasCustomContent
+              ? "my-5 flex-1"
+              : "my-5 flex-1 flex flex-col justify-center items-center gap-2.5 text-center"
           }
         >
           {hasCustomContent ? (
@@ -71,24 +84,28 @@ export const Modal = ({
           ) : (
             <>
               {Icon && (
-                <div className={styles.icon}>
+                <div className="mb-2.5 text-[#1f4e79] inline-flex">
                   <Icon size={40} />
                 </div>
               )}
 
-              {message && <p className={styles.message}>{message}</p>}
+              {message && (
+                <p className="text-xl text-[#1f4e79] m-0">{message}</p>
+              )}
 
               {secondaryMessage && (
-                <p className={styles.secondary}>{secondaryMessage}</p>
+                <p className="text-lg text-[#1f4e79] m-0">
+                  {secondaryMessage}
+                </p>
               )}
             </>
           )}
         </div>
 
         {footer ? (
-          <div className={styles.footer}>{footer}</div>
+          <div className="flex justify-end gap-3">{footer}</div>
         ) : hasDefaultFooter ? (
-          <div className={styles.actions}>
+          <div className="flex justify-center gap-3">
             {onCancel && (
               <Button
                 variant="white"
