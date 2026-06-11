@@ -70,6 +70,7 @@ export function Home() {
   const [formEmail, setFormEmail] = useState("");
   const [formRole, setFormRole] = useState<UserRole>("Usuario");
   const [formActive, setFormActive] = useState(true);
+  const [formError, setFormError] = useState("");
 
   const loadCurrentUser = async () => {
     try {
@@ -152,16 +153,17 @@ export function Home() {
     return users.filter((user) => user.role === roleFilter);
   }, [users, roleFilter]);
 
-  const clearForm = () => {
-    setFormFirstName("");
-    setFormPaternalSurname("");
-    setFormMaternalSurname("");
-    setFormEmail("");
-    setFormRole("Usuario");
-    setFormActive(true);
-    setSelectedUserId(null);
-    setIsEditing(false);
-  };
+ const clearForm = () => {
+  setFormFirstName("");
+  setFormPaternalSurname("");
+  setFormMaternalSurname("");
+  setFormEmail("");
+  setFormRole("Usuario");
+  setFormActive(true);
+  setSelectedUserId(null);
+  setIsEditing(false);
+  setFormError("");
+};
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -189,31 +191,52 @@ export function Home() {
   };
 
   const handleSaveUser = async () => {
-    try {
-      if (isEditing && selectedUserId) {
-        await apiClient.put(`/user/${selectedUserId}`, {
-          firstName: formFirstName,
-          paternalSurname: formPaternalSurname,
-          maternalSurname: formMaternalSurname,
-          email: formEmail,
-          active: formActive,
-        });
-      } else {
-        await apiClient.post("/user", {
-          firstName: formFirstName,
-          paternalSurname: formPaternalSurname,
-          maternalSurname: formMaternalSurname,
-          email: formEmail,
-          roleId: 2,
-        });
-      }
+  setFormError("");
 
-      closeModal();
-      await loadUsers();
-    } catch (error) {
-      console.error("Error al guardar usuario:", error);
+  const firstName = formFirstName.trim();
+  const paternalSurname = formPaternalSurname.trim();
+  const maternalSurname = formMaternalSurname.trim();
+  const email = formEmail.trim();
+
+  if (!firstName || !paternalSurname || !maternalSurname || !email) {
+    setFormError("Todos los campos obligatorios deben estar completos.");
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    setFormError("Ingresa un correo electrónico válido.");
+    return;
+  }
+
+  try {
+    if (isEditing && selectedUserId) {
+      await apiClient.put(`/user/${selectedUserId}`, {
+        firstName,
+        paternalSurname,
+        maternalSurname,
+        email,
+        active: formActive,
+      });
+    } else {
+      await apiClient.post("/user", {
+        firstName,
+        paternalSurname,
+        maternalSurname,
+        email,
+        roleId: 2,
+      });
     }
-  };
+
+    closeModal();
+    await loadUsers();
+  } catch (error) {
+    console.error("Error al guardar usuario:", error);
+    setFormError("Error al guardar usuario. Revisa los datos e intenta de nuevo.");
+  }
+};
+
 
   const handleDeleteUser = async (user: User) => {
     const confirmDelete = window.confirm(`¿Eliminar a ${user.name}?`);
@@ -519,43 +542,49 @@ export function Home() {
 
       {isModalOpen && (
         <Modal
-          title={isEditing ? "Editar usuario" : "Crear usuario"}
-          onClose={closeModal}
-          footer={
-            <>
-              <Button variant="white" label="Cancelar" onPress={closeModal} />
+  title={isEditing ? "Editar usuario" : "Crear usuario"}
+  onClose={closeModal}
+  footer={
+    <>
+      <Button variant="white" label="Cancelar" onPress={closeModal} />
 
-              <Button
-                variant="blue"
-                label={isEditing ? "Actualizar" : "Guardar"}
-                onPress={handleSaveUser}
-              />
-            </>
-          }
-        >
-          <Input
-            label="Nombre"
-            value={formFirstName}
-            onChange={(event) => setFormFirstName(event.target.value)}
-            placeholder="Nombre"
-          />
+      <Button
+        variant="blue"
+        label={isEditing ? "Actualizar" : "Guardar"}
+        onPress={handleSaveUser}
+      />
+    </>
+  }
+>
+  {formError && (
+    <p className="mb-4 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700">
+      {formError}
+    </p>
+  )}
+
+  <Input
+    label="Nombre(Obligatorio)"
+    value={formFirstName}
+    onChange={(event) => setFormFirstName(event.target.value)}
+    placeholder="Nombre"
+  />
 
           <Input
-            label="Apellido paterno"
+            label="Apellido paterno(Obligatorio)"
             value={formPaternalSurname}
             onChange={(event) => setFormPaternalSurname(event.target.value)}
             placeholder="Apellido paterno"
           />
 
           <Input
-            label="Apellido materno (opcional)"
+            label="Apellido materno(Obligatorio)"
             value={formMaternalSurname}
             onChange={(event) => setFormMaternalSurname(event.target.value)}
             placeholder="Apellido materno"
           />
 
           <Input
-            label="Correo"
+            label="Correo (Obligatorio)"
             type="email"
             value={formEmail}
             onChange={(event) => setFormEmail(event.target.value)}
